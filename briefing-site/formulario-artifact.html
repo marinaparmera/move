@@ -1,0 +1,568 @@
+<title>Briefing de Site Move</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&display=swap">
+<style>
+/* Layout: faixa de cabeçalho, depois índice lateral fixo com progresso + formulário em uma coluna */
+:root {
+  --bg: #F5F6FA; --surface: #FFFFFF; --ink: #131833; --muted: #5A6282; --line: #DCE0EC;
+  --accent: #2F43F5; --accent-ink: #FFFFFF; --accent-soft: #E7EAFF; --ok: #13804B; --ok-soft: #E2F4EA;
+  --warn: #B4232C; --warn-soft: #FCE8E9; --cart: #9A5B00; --cart-soft: #FFF1D9;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "Figtree", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --r: 10px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0D1020; --surface: #151A2F; --ink: #E8EBF7; --muted: #99A1C0; --line: #2A3052;
+  --accent: #8291FF; --accent-ink: #0D1020; --accent-soft: #1E2452; --ok: #5FD39A; --ok-soft: #12301F;
+  --warn: #FF8A90; --warn-soft: #3A1518; --cart: #F3B65A; --cart-soft: #33250C; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0D1020; --surface: #151A2F; --ink: #E8EBF7; --muted: #99A1C0; --line: #2A3052;
+  --accent: #8291FF; --accent-ink: #0D1020; --accent-soft: #1E2452; --ok: #5FD39A; --ok-soft: #12301F;
+  --warn: #FF8A90; --warn-soft: #3A1518; --cart: #F3B65A; --cart-soft: #33250C; color-scheme: dark }
+
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55 }
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+
+header.top { border-bottom: 1px solid var(--line); background: var(--surface) }
+header.top .wrap { padding-block: 40px 32px; display: grid; gap: 14px }
+.brand { font-family: var(--display); font-weight: 700; font-size: 15px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent) }
+h1 { font-family: var(--display); font-weight: 700; font-size: clamp(30px, 5vw, 46px); line-height: 1.08; margin: 0; text-wrap: balance; max-width: 18ch }
+.lead { color: var(--muted); max-width: 62ch; margin: 0 }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 14px; color: var(--muted) }
+.meta b { color: var(--ink); font-weight: 600 }
+
+.progress { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line) }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg) }
+.progress .wrap { display: flex; align-items: center; gap: 14px; padding-block: 10px }
+.bar { flex: 1; height: 6px; border-radius: 6px; background: var(--line); overflow: hidden }
+.bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .3s }
+.pct { font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; min-width: 92px; text-align: right; color: var(--muted) }
+
+.layout { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 40px; padding-block: 32px 80px }
+nav.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 64px); align-self: start; display: grid; gap: 2px; font-size: 14px }
+nav.toc a { display: flex; justify-content: space-between; gap: 8px; padding: 7px 10px; border-radius: 8px; color: var(--muted); text-decoration: none }
+nav.toc a:hover { background: var(--surface); color: var(--ink) }
+nav.toc a.done { color: var(--ink) }
+nav.toc a .n { font-variant-numeric: tabular-nums; font-size: 12px }
+nav.toc a.done .n { color: var(--ok); font-weight: 600 }
+
+form { display: grid; gap: 28px; min-width: 0 }
+section.sec { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 28px clamp(18px, 3vw, 32px); display: grid; gap: 22px; scroll-margin-top: 70px }
+.sec-head { display: grid; gap: 6px }
+.sec-head .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); display: flex; gap: 10px; align-items: center; flex-wrap: wrap }
+.tag-cart { background: var(--cart-soft); color: var(--cart); padding: 2px 8px; border-radius: 20px; letter-spacing: .04em }
+h2 { font-family: var(--display); font-weight: 700; font-size: 24px; line-height: 1.2; margin: 0; text-wrap: balance }
+.sec-head p { margin: 0; color: var(--muted); max-width: 64ch; font-size: 15px }
+
+.field { display: grid; gap: 8px; min-width: 0 }
+.field > label, .field legend { font-weight: 600; font-size: 15px; padding: 0 }
+.req { color: var(--accent); margin-left: 3px }
+.hint { font-size: 13.5px; color: var(--muted); margin-top: -4px }
+fieldset { border: 0; margin: 0; padding: 0; min-width: 0; display: grid; gap: 8px }
+input[type=text], input[type=email], input[type=tel], input[type=url], input[type=date], textarea, select {
+  width: 100%; font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 11px 13px }
+textarea { min-height: 92px; resize: vertical }
+input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-visible, .opt input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px }
+.opts { display: flex; flex-wrap: wrap; gap: 8px }
+.opt { position: relative; cursor: pointer }
+.opt input { position: absolute; opacity: 0; inset: 0; cursor: pointer }
+.opt span { display: inline-block; padding: 8px 14px; border: 1px solid var(--line); border-radius: 22px; font-size: 14.5px; background: var(--bg); transition: background .15s, border-color .15s }
+.opt input:checked + span { background: var(--accent-soft); border-color: var(--accent); color: var(--ink); font-weight: 600 }
+.other { margin-top: 2px }
+.field.err input, .field.err textarea, .field.err select, .field.err .opt span { border-color: var(--warn) }
+.field.err .errmsg { display: block }
+.errmsg { display: none; color: var(--warn); font-size: 13.5px }
+
+.matrix { border: 1px solid var(--line); border-radius: 8px; overflow-x: auto }
+.mrow { display: grid; grid-template-columns: minmax(150px, 1fr) auto; gap: 10px; align-items: center; padding: 9px 12px; border-top: 1px solid var(--line) }
+.mrow:first-child { border-top: 0 }
+.mrow .ml { font-size: 14.5px }
+.mrow .opts { gap: 6px; flex-wrap: nowrap }
+.mrow .opt span { padding: 5px 11px; font-size: 13.5px }
+
+.note { background: var(--accent-soft); border-radius: 8px; padding: 14px 16px; font-size: 14.5px }
+.note b { font-weight: 600 }
+.refs { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)) }
+.refcard { border: 1px dashed var(--line); border-radius: 8px; padding: 14px; display: grid; gap: 12px; min-width: 0 }
+
+.actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center }
+button { font: inherit; font-weight: 600; border-radius: 8px; padding: 12px 20px; cursor: pointer; border: 1px solid var(--line); background: var(--surface); color: var(--ink) }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-size: 16px; padding: 14px 26px }
+button:disabled { opacity: .6; cursor: progress }
+.saved { font-size: 13px; color: var(--muted) }
+
+.done { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 32px clamp(18px, 3vw, 32px); display: grid; gap: 16px }
+.done .badge { justify-self: start; font-size: 13px; font-weight: 600; padding: 4px 12px; border-radius: 20px }
+.badge.ok { background: var(--ok-soft); color: var(--ok) }
+.badge.pend { background: var(--cart-soft); color: var(--cart) }
+.done textarea { min-height: 260px; font-size: 13.5px; font-family: ui-monospace, "SF Mono", Menlo, monospace }
+
+.admin { background: var(--surface); border: 1px solid var(--accent); border-radius: var(--r); margin-top: 24px }
+.admin summary { cursor: pointer; padding: 14px 20px; font-weight: 600; display: flex; justify-content: space-between; gap: 10px }
+.admin .inner { padding: 0 20px 20px; display: grid; gap: 10px }
+.alist { display: grid; gap: 6px }
+.aitem { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 10px; text-align: left; font-weight: 400; padding: 10px 14px }
+.aitem small { color: var(--muted); font-variant-numeric: tabular-nums }
+.empty { color: var(--muted); font-size: 14px }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: minmax(0, 1fr) }
+  nav.toc { display: none }
+}
+@media (max-width: 520px) {
+  .mrow { grid-template-columns: minmax(0, 1fr) }
+  .mrow .opts { flex-wrap: wrap }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important } }
+html { scroll-behavior: smooth }
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand">Movementme</div>
+    <h1>Briefing para criação do seu site</h1>
+    <p class="lead">Estas respostas mostram para a nossa equipe tudo o que o seu site precisa: objetivo, estrutura, conteúdo, produtos, integrações e acessos. Responda o que souber. Se não souber alguma coisa, deixe em branco ou marque “Não sei”, que a gente resolve junto na reunião.</p>
+    <div class="meta"><span><b>Tempo médio:</b> 20 a 30 minutos</span><span><b>Rascunho:</b> salvo automaticamente neste navegador</span><span><b>Obrigatórios:</b> marcados com <span class="req">*</span></span></div>
+    <div id="adminSlot"></div>
+  </div>
+</header>
+
+<div class="progress"><div class="wrap"><div class="bar"><i id="barFill"></i></div><div class="pct" id="pct">0% respondido</div></div></div>
+
+<div class="wrap layout">
+  <nav class="toc" id="toc" aria-label="Seções do formulário"></nav>
+  <div style="min-width:0">
+    <form id="form" novalidate></form>
+    <div id="doneSlot" hidden></div>
+  </div>
+</div>
+
+<script>
+const SN = ["Sim", "Não", "Não sei"];
+const FORM = [
+ { id: "empresa", t: "Dados da empresa", d: "Informações que vão para o rodapé, a página de contato, as políticas e o Google.", f: [
+  { id: "razao", l: "Razão social", t: "text" },
+  { id: "fantasia", l: "Nome fantasia (como a marca aparece no site)", t: "text", req: 1 },
+  { id: "cnpj", l: "CNPJ", t: "text", h: "Somente números ou no formato 00.000.000/0000-00" },
+  { id: "ie", l: "Inscrição estadual e municipal", t: "text", h: "Se tiver" },
+  { id: "endereco", l: "Endereço completo", t: "textarea" },
+  { id: "mostra_endereco", l: "O endereço deve aparecer no site?", t: "radio", o: ["Sim, completo", "Só a cidade", "Não"] },
+  { id: "horario", l: "Horário de funcionamento", t: "text" },
+  { id: "segmento", l: "Ramo de atuação e segmento", t: "text" },
+  { id: "tempo", l: "Há quanto tempo a empresa existe?", t: "text" },
+  { id: "cartao_cnpj", l: "Cartão CNPJ", t: "url", h: "Cole o link do arquivo (Google Drive, Dropbox) ou envie depois pelo WhatsApp" }
+ ]},
+ { id: "contatos", t: "Responsáveis e contatos", d: "Com quem a gente fala durante o projeto.", f: [
+  { id: "resp_nome", l: "Nome do responsável pelo projeto", t: "text", req: 1 },
+  { id: "resp_cargo", l: "Cargo", t: "text" },
+  { id: "resp_whats", l: "WhatsApp", t: "tel", req: 1 },
+  { id: "resp_email", l: "E-mail", t: "email", req: 1 },
+  { id: "aprovador", l: "Quem aprova o layout e o conteúdo, se for outra pessoa? (nome e contato)", t: "text" },
+  { id: "ti", l: "Responsável técnico ou TI atual (nome e contato)", t: "text", h: "Se houver alguém que cuida de domínio, hospedagem ou sistemas" },
+  { id: "canal", l: "Melhor canal para falar com vocês", t: "check", o: ["WhatsApp", "E-mail", "Ligação", "Reunião online"] }
+ ]},
+ { id: "objetivo", t: "Objetivo e estratégia", d: "A parte mais importante: é ela que define a estrutura do site.", f: [
+  { id: "obj_principal", l: "Qual é o principal objetivo do site?", t: "radio", req: 1, other: 1, o: ["Vender online", "Gerar contatos e orçamentos", "Levar o cliente para o WhatsApp", "Agendamentos", "Captar leads (e-mails, cadastros)", "Catálogo de produtos", "Fortalecer a marca"] },
+  { id: "obj_secundarios", l: "Objetivos secundários", t: "check", o: ["Vender online", "Gerar contatos e orçamentos", "Levar o cliente para o WhatsApp", "Agendamentos", "Captar leads (e-mails, cadastros)", "Catálogo de produtos", "Fortalecer a marca", "Recrutar pessoas"] },
+  { id: "vende_online", l: "O site vai vender produtos online, com carrinho e pagamento?", t: "radio", req: 1, o: ["Sim", "Não", "Ainda não sei"], h: "Se marcar Sim ou Ainda não sei, aparecem as seções de produtos, pagamento e frete." },
+  { id: "publico", l: "Quem é o seu público?", t: "textarea", h: "Idade, perfil, região, se vende para empresas (B2B) ou para pessoas (B2C)" },
+  { id: "acao", l: "Qual é a principal ação que o visitante deve fazer no site?", t: "text", h: "Exemplo: comprar, chamar no WhatsApp, pedir orçamento, agendar" },
+  { id: "diferencial", l: "O que diferencia sua empresa da concorrência?", t: "textarea" },
+  { id: "metricas", l: "Como você vai medir se o site deu certo?", t: "check", other: 1, o: ["Vendas", "Contatos e orçamentos", "Mensagens no WhatsApp", "Agendamentos", "Visitas ao site", "Cadastros de e-mail"] }
+ ]},
+ { id: "referencias", t: "Referências e inspirações", d: "Mostre sites que você gosta. Podem ser de qualquer segmento. Para cada um, conte o que te chama atenção: cores, fotos, organização, textos, facilidade de navegar, animações ou a sensação que passa.", f: [
+  { id: "ref_group", t: "refs", n: 4 },
+  { id: "ref_segmento", l: "Tem algum site do seu segmento que você vê como referência?", t: "textarea", h: "Cole o link e diga por quê" },
+  { id: "concorrentes", l: "Quais são os seus 3 principais concorrentes? O que eles fazem bem e o que fazem mal?", t: "textarea", h: "Cole os links" },
+  { id: "nao_gosta", l: "Tem algum site ou estilo que você NÃO quer de jeito nenhum? Por quê?", t: "textarea" },
+  { id: "sensacao", l: "Que sensação o seu site deve passar?", t: "check", other: 1, o: ["Moderno", "Clássico e elegante", "Minimalista e clean", "Colorido e divertido", "Sofisticado ou premium", "Acolhedor e afetivo", "Tecnológico", "Natural e orgânico", "Ousado"] },
+  { id: "img_texto", l: "Prefere um site com mais imagens ou com mais texto?", t: "radio", o: ["Mais imagens", "Equilibrado", "Mais texto"] },
+  { id: "tons", l: "Prefere tons claros ou escuros?", t: "radio", o: ["Claros", "Escuros", "Tanto faz"] },
+  { id: "ref_offline", l: "Referências que não são sites", t: "textarea", h: "Perfis do Instagram, embalagens, lojas físicas, revistas" },
+  { id: "pinterest", l: "Link de pasta ou painel com prints e inspirações", t: "url", h: "Pinterest, Google Drive, Canva ou similar" }
+ ]},
+ { id: "situacao", t: "Situação atual", d: "Para saber se começamos do zero ou se aproveitamos algo que já existe.", f: [
+  { id: "tipo_projeto", l: "O projeto é:", t: "radio", req: 1, o: ["Site do zero", "Reformulação de um site existente", "Troca de plataforma"] },
+  { id: "site_atual", l: "Link do site atual", t: "url", if: { f: "tipo_projeto", in: ["Reformulação de um site existente", "Troca de plataforma"] } },
+  { id: "plat_atual", l: "Em qual plataforma o site atual foi feito?", t: "select", if: { f: "tipo_projeto", in: ["Reformulação de um site existente", "Troca de plataforma"] }, o: ["WordPress", "WooCommerce", "Shopify", "Nuvemshop", "Tray", "Loja Integrada", "Wix", "VTEX", "Outra", "Não sei"] },
+  { id: "funciona", l: "O que funciona e o que não funciona no site atual?", t: "textarea", if: { f: "tipo_projeto", in: ["Reformulação de um site existente", "Troca de plataforma"] } },
+  { id: "migrar", l: "O que precisa ser migrado do site atual?", t: "check", if: { f: "tipo_projeto", in: ["Reformulação de um site existente", "Troca de plataforma"] }, o: ["Textos e páginas", "Produtos", "Clientes", "Pedidos", "Posts do blog", "Nada"] },
+  { id: "trafego", l: "O site atual recebe visitas relevantes vindas do Google?", t: "radio", if: { f: "tipo_projeto", in: ["Reformulação de um site existente", "Troca de plataforma"] }, o: SN, h: "Importante para não perder posicionamento na troca" }
+ ]},
+ { id: "dominio", t: "Domínio, hospedagem e e-mail", d: "Não envie senhas aqui. Vamos pedir acesso de forma segura depois.", f: [
+  { id: "tem_dominio", l: "Já tem domínio registrado (exemplo: suaempresa.com.br)?", t: "radio", o: SN },
+  { id: "dominio", l: "Qual é o domínio?", t: "text", if: { f: "tem_dominio", in: ["Sim"] } },
+  { id: "registrador", l: "Onde o domínio está registrado?", t: "select", if: { f: "tem_dominio", in: ["Sim"] }, o: ["Registro.br", "GoDaddy", "Hostinger", "HostGator", "Locaweb", "KingHost", "Cloudflare", "Outro", "Não sei"] },
+  { id: "acesso_dominio", l: "Quem tem acesso ao painel do domínio?", t: "text", if: { f: "tem_dominio", in: ["Sim"] } },
+  { id: "tem_hospedagem", l: "Já tem servidor ou hospedagem contratada?", t: "radio", o: SN },
+  { id: "hospedagem", l: "Qual empresa e qual plano?", t: "text", if: { f: "tem_hospedagem", in: ["Sim"] } },
+  { id: "move_hospeda", l: "Quer que a Move contrate e gerencie a hospedagem?", t: "radio", o: ["Sim", "Não", "Quero conversar"] },
+  { id: "email_prof", l: "Usa e-mail profissional?", t: "radio", o: ["Google Workspace", "Microsoft 365", "E-mail da hospedagem", "Não uso", "Não sei"] },
+  { id: "emails_novos", l: "Precisa criar e-mails novos? Quais?", t: "text", h: "Exemplo: contato@, vendas@, financeiro@" },
+  { id: "ssl", l: "O site atual tem o cadeado de segurança (https)?", t: "radio", o: ["Sim", "Não", "Não sei", "Não tenho site"] }
+ ]},
+ { id: "plataforma", t: "Plataforma e funcionalidades", f: [
+  { id: "pref_plat", l: "Tem preferência de plataforma?", t: "select", o: ["Deixo a escolha com a Move", "WordPress", "Shopify", "Nuvemshop", "Tray", "Wix", "Webflow", "Outra"] },
+  { id: "funcoes", l: "O que o site precisa ter?", t: "check", other: 1, o: ["Formulário de contato", "Botão flutuante de WhatsApp", "Blog", "Agendamento online", "Área de membros ou login", "Chat", "Pop-up de captura de e-mail", "Mais de um idioma", "Galeria ou portfólio", "Depoimentos e avaliações", "Mapa", "Perguntas frequentes", "Feed do Instagram", "Calculadora ou simulador"] },
+  { id: "integracoes", l: "Precisa integrar com algum sistema?", t: "textarea", h: "CRM, ERP, agendamento, RD Station, HubSpot, Bling, Tiny, Omie, outro" }
+ ]},
+ { id: "identidade", t: "Identidade visual e conteúdo", f: [
+  { id: "logo", l: "Já tem logotipo?", t: "radio", o: ["Sim, em vetor (SVG, AI, PDF)", "Sim, só em imagem (PNG, JPG)", "Não, precisa criar"] },
+  { id: "manual", l: "Tem manual de marca com cores e fontes definidas?", t: "radio", o: SN },
+  { id: "cores", l: "Quais são as cores da marca?", t: "text", h: "Nome ou código da cor, se souber" },
+  { id: "fotos", l: "Tem fotos profissionais da empresa, equipe e produtos?", t: "radio", o: ["Sim, todas", "Algumas", "Não"] },
+  { id: "prod_fotos", l: "Precisa de produção de fotos ou de banco de imagens?", t: "radio", o: ["Produção de fotos", "Banco de imagens", "Não preciso", "Quero conversar"] },
+  { id: "textos", l: "Quem vai escrever os textos do site?", t: "radio", o: ["Eu (cliente)", "Move", "Os dois juntos"] },
+  { id: "videos", l: "Tem vídeos institucionais ou de produtos?", t: "radio", o: SN },
+  { id: "tom", l: "Tom de voz da marca", t: "check", o: ["Formal", "Descontraído", "Técnico", "Acolhedor", "Sofisticado", "Divertido", "Direto"] },
+  { id: "institucional", l: "Já tem por escrito a história, a missão e os valores da empresa?", t: "radio", o: SN },
+  { id: "arquivos", l: "Link da pasta com logo, manual, fotos e textos", t: "url", h: "Google Drive, Dropbox ou WeTransfer" }
+ ]},
+ { id: "paginas", t: "Estrutura de páginas", f: [
+  { id: "paginas", l: "Quais páginas o site deve ter?", t: "check", other: 1, o: ["Início", "Sobre", "Serviços", "Produtos ou loja", "Blog", "Contato", "Perguntas frequentes", "Trabalhe conosco", "Depoimentos", "Portfólio ou cases", "Política de privacidade", "Termos de uso"] },
+  { id: "qtd_servicos", l: "Quantos serviços ou categorias precisam de página própria?", t: "text" },
+  { id: "landing", l: "Vai precisar de páginas separadas para campanhas (landing pages)?", t: "radio", o: SN }
+ ]},
+ { id: "produtos", cart: 1, t: "Produtos e catálogo", d: "Quanto mais completas as fichas técnicas, mais rápido o cadastro e melhor o resultado no Google.", if: { f: "vende_online", in: ["Sim", "Ainda não sei"] }, f: [
+  { id: "qtd_produtos", l: "Quantos produtos serão cadastrados no lançamento?", t: "select", req: 1, o: ["Até 20", "21 a 50", "51 a 200", "201 a 500", "Mais de 500"] },
+  { id: "categorias", l: "Quantas categorias e subcategorias? Quais?", t: "textarea" },
+  { id: "variacoes", l: "Os produtos têm variações?", t: "check", other: 1, o: ["Tamanho", "Cor", "Sabor", "Peso ou volume", "Voltagem", "Não têm variações"] },
+  { id: "fichas", l: "As fichas técnicas dos produtos estão prontas?", t: "radio", o: ["Sim, completas", "Parcialmente", "Não"] },
+  { id: "fichas_formato", l: "Em qual formato estão as fichas?", t: "select", o: ["Planilha (Excel ou Google Sheets)", "PDF", "No sistema ou ERP", "No site atual", "Outro"] },
+  { id: "fichas_conteudo", l: "O que cada ficha tem?", t: "check", o: ["Nome", "Descrição", "Preço", "Preço promocional", "Código (SKU)", "Código de barras (EAN)", "Peso e dimensões", "Fotos", "Ingredientes ou composição", "Tabela nutricional", "Validade", "Modo de uso", "Alérgenos"] },
+  { id: "quem_cadastra", l: "Quem vai cadastrar os produtos?", t: "radio", o: ["Eu (cliente)", "Move", "Os dois juntos"] },
+  { id: "estoque", l: "Controla estoque?", t: "radio", o: ["Sim, em sistema", "Sim, em planilha", "Não controlo", "Produção sob demanda"] },
+  { id: "erp", l: "Usa algum ERP ou sistema de gestão?", t: "select", o: ["Bling", "Tiny (Olist)", "Omie", "Conta Azul", "TOTVS", "Outro", "Não uso"] },
+  { id: "atacado", l: "Vende no atacado e no varejo com preços diferentes?", t: "radio", o: ["Só varejo", "Só atacado", "Os dois"] },
+  { id: "encomenda", l: "Tem produtos sob encomenda ou personalizados?", t: "radio", o: SN }
+ ]},
+ { id: "pagamento", cart: 1, t: "Pagamento, frete e nota fiscal", if: { f: "vende_online", in: ["Sim", "Ainda não sei"] }, f: [
+  { id: "pagamentos", l: "Quais formas de pagamento?", t: "check", o: ["Pix", "Cartão de crédito", "Parcelamento", "Cartão de débito", "Boleto", "Pagamento na entrega"] },
+  { id: "gateway", l: "Já tem conta em algum intermediador de pagamento?", t: "select", o: ["Mercado Pago", "PagBank (PagSeguro)", "Pagar.me", "Stripe", "Asaas", "Cielo", "Stone", "Getnet", "Outro", "Não tenho"] },
+  { id: "entrega", l: "Como faz as entregas?", t: "check", other: 1, o: ["Correios", "Melhor Envio", "Transportadora", "Motoboy próprio", "Aplicativo de entrega", "Retirada no local"] },
+  { id: "area_entrega", l: "Para onde entrega?", t: "radio", o: ["Só na minha cidade", "Na minha região", "No estado", "Brasil todo"] },
+  { id: "frete_gratis", l: "Oferece frete grátis? Com qual regra?", t: "text", h: "Exemplo: acima de R$ 200 para a capital" },
+  { id: "agenda_entrega", l: "O cliente precisa escolher data ou horário de entrega?", t: "radio", o: SN, h: "Importante para produtos perecíveis e encomendas" },
+  { id: "nf", l: "Emite nota fiscal eletrônica? Por qual sistema?", t: "text" },
+  { id: "troca", l: "Já tem política de troca e devolução escrita?", t: "radio", o: SN }
+ ]},
+ { id: "canais", t: "Canais de venda e atendimento", f: [
+  { id: "canais", l: "Onde você vende hoje?", t: "check", other: 1, o: ["Loja física", "WhatsApp", "Instagram", "iFood", "Mercado Livre", "Shopee", "Amazon", "Revendedores", "Site próprio", "Feiras e eventos"] },
+  { id: "canal_top", l: "Qual canal mais vende hoje?", t: "text" },
+  { id: "whats_business", l: "Usa WhatsApp Business?", t: "radio", o: ["Sim, o aplicativo", "Sim, a API oficial", "Não, uso o WhatsApp comum", "Não uso WhatsApp"] },
+  { id: "whats_numero", l: "Número do WhatsApp que vai aparecer no site", t: "tel" },
+  { id: "whats_ferramenta", l: "Usa alguma ferramenta de atendimento?", t: "select", o: ["Não uso", "Kommo", "Blip", "Zenvia", "Z-API", "Chatwoot", "Octadesk", "Outra"] },
+  { id: "catalogo_whats", l: "Tem catálogo cadastrado no WhatsApp ou loja no Instagram e Facebook?", t: "radio", o: SN },
+  { id: "quem_responde", l: "Quem vai responder os contatos que chegarem pelo site?", t: "text" }
+ ]},
+ { id: "google", t: "Google, tags e rastreamento", d: "Marque o que já existe. Se não souber o que é, marque “Não sei”: verificamos com você.", f: [
+  { id: "contas", l: "Quais contas e ferramentas você já tem?", t: "matrix", o: SN, rows: ["Conta Google da empresa (Gmail ou Workspace)", "Google Analytics 4", "Google Tag Manager", "Google Search Console", "Perfil da Empresa no Google (Google Meu Negócio)", "Google Ads", "Google Merchant Center", "Meta Business (Gerenciador de Negócios)", "Pixel da Meta", "API de Conversões da Meta", "Pixel do TikTok", "LinkedIn Insight Tag"] },
+  { id: "anuncios", l: "Anuncia ou pretende anunciar em:", t: "check", o: ["Google", "Instagram e Facebook", "TikTok", "LinkedIn", "Pinterest", "Ainda não anuncio"] },
+  { id: "email_mkt", l: "Usa ferramenta de e-mail marketing?", t: "select", o: ["Não uso", "RD Station", "Mailchimp", "Klaviyo", "Brevo", "E-goi", "Outra"] },
+  { id: "conversoes", l: "O que precisamos rastrear como conversão?", t: "check", other: 1, o: ["Compra", "Formulário enviado", "Clique no WhatsApp", "Clique no telefone", "Agendamento", "Cadastro de e-mail"] },
+  { id: "acessos_nota", t: "note", html: "<b>Sobre acessos:</b> nunca envie senhas por formulário ou WhatsApp. Vamos te mandar o e-mail da Move para você adicionar como administrador em cada conta. Assim o acesso fica registrado e pode ser removido quando quiser." },
+  { id: "add_admin", l: "Você consegue adicionar o e-mail da Move como administrador nessas contas?", t: "radio", o: ["Sim, consigo sozinho(a)", "Preciso de ajuda", "Não sei onde fica"] }
+ ]},
+ { id: "seo", t: "Google e redes sociais", f: [
+  { id: "palavras", l: "O que o seu cliente digita no Google para te encontrar?", t: "textarea", h: "Exemplo: doces sem açúcar em Curitiba, consultoria de marketing para clínicas" },
+  { id: "abrangencia", l: "Atende onde?", t: "radio", o: ["Na minha cidade", "Na minha região ou estado", "Brasil todo", "Outros países também"] },
+  { id: "instagram", l: "Instagram", t: "text", h: "@ ou link" },
+  { id: "facebook", l: "Facebook", t: "text" },
+  { id: "tiktok", l: "TikTok", t: "text" },
+  { id: "linkedin", l: "LinkedIn", t: "text" },
+  { id: "youtube", l: "YouTube", t: "text" },
+  { id: "outras_redes", l: "Outras redes", t: "text" }
+ ]},
+ { id: "juridico", t: "Jurídico e LGPD", f: [
+  { id: "privacidade", l: "Já tem Política de Privacidade?", t: "radio", o: SN },
+  { id: "termos", l: "Já tem Termos de Uso?", t: "radio", o: SN },
+  { id: "cookies_nota", t: "note", html: "<b>Banner de cookies:</b> sites que usam Google Analytics, Pixel da Meta e outras tags precisam pedir consentimento ao visitante (LGPD). A Move inclui isso no projeto." },
+  { id: "selos", l: "Tem registros ou selos que precisam aparecer no site?", t: "textarea", h: "ANVISA, conselho profissional (CRM, CRN, OAB), Reclame Aqui, certificações" },
+  { id: "inpi", l: "A marca está registrada no INPI?", t: "radio", o: ["Sim", "Em andamento", "Não", "Não sei"] }
+ ]},
+ { id: "prazos", t: "Prazos, investimento e manutenção", f: [
+  { id: "data_limite", l: "Existe uma data limite para o lançamento?", t: "date" },
+  { id: "motivo_data", l: "Por que essa data?", t: "text", h: "Evento, campanha, data comemorativa" },
+  { id: "orcamento", l: "Quanto pretende investir no site?", t: "select", o: ["Até R$ 3 mil", "R$ 3 mil a R$ 6 mil", "R$ 6 mil a R$ 10 mil", "R$ 10 mil a R$ 20 mil", "Acima de R$ 20 mil", "Prefiro conversar"] },
+  { id: "quem_atualiza", l: "Depois de pronto, quem vai atualizar o site?", t: "radio", o: ["Eu ou minha equipe", "Move", "Os dois"] },
+  { id: "manutencao", l: "Tem interesse em plano de manutenção mensal?", t: "radio", o: ["Sim", "Não", "Quero saber mais"] },
+  { id: "outros_servicos", l: "Tem interesse em outros serviços depois do lançamento?", t: "check", o: ["Tráfego pago (anúncios)", "SEO", "Blog e conteúdo", "Redes sociais", "E-mail marketing", "Automação de WhatsApp"] },
+  { id: "obs", l: "Tem algo que não perguntamos e que você quer contar?", t: "textarea" }
+ ]}
+];
+
+const $ = (s, r = document) => r.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const allFields = () => FORM.flatMap(s => s.f.map(f => ({ ...f, sec: s })));
+const DRAFT = "move-briefing-site-v1";
+
+function optHTML(name, type, opts) {
+  return `<div class="opts">${opts.map(o => `<label class="opt"><input type="${type}" name="${name}" value="${esc(o)}"><span>${esc(o)}</span></label>`).join("")}</div>`;
+}
+function fieldHTML(f) {
+  const lab = `${esc(f.l || "")}${f.req ? '<span class="req" aria-hidden="true">*</span>' : ""}`;
+  const hint = f.h ? `<div class="hint">${esc(f.h)}</div>` : "";
+  const err = `<div class="errmsg">Responda esta pergunta para continuar.</div>`;
+  const ifa = f.if ? ` data-if="${esc(JSON.stringify(f.if))}"` : "";
+  if (f.t === "note") return `<div class="note" data-id="${f.id}">${f.html}</div>`;
+  if (f.t === "refs") {
+    let h = "";
+    for (let i = 1; i <= f.n; i++) h += `<div class="refcard"><div class="field" data-id="ref${i}_link"><label for="ref${i}_link">Referência ${i}: link</label><input type="url" id="ref${i}_link" name="ref${i}_link" placeholder="https://"></div><div class="field" data-id="ref${i}_gosta"><label for="ref${i}_gosta">O que você gosta nele? Tem algo de que não gosta?</label><textarea id="ref${i}_gosta" name="ref${i}_gosta" style="min-height:72px"></textarea></div></div>`;
+    return `<div class="refs">${h}</div>`;
+  }
+  if (f.t === "radio" || f.t === "check") {
+    const opts = f.other ? [...f.o, "Outro"] : f.o;
+    const other = f.other ? `<input type="text" class="other" id="${f.id}__outro" name="${f.id}__outro" placeholder="Qual?" hidden aria-label="Outro: qual?">` : "";
+    return `<div class="field" data-id="${f.id}"${ifa}><fieldset><legend>${lab}</legend>${hint}${optHTML(f.id, f.t === "radio" ? "radio" : "checkbox", opts)}${other}</fieldset>${err}</div>`;
+  }
+  if (f.t === "matrix") {
+    const rows = f.rows.map((r, i) => `<div class="mrow" role="radiogroup" aria-label="${esc(r)}"><span class="ml">${esc(r)}</span>${optHTML(`${f.id}__${i}`, "radio", f.o)}</div>`).join("");
+    return `<div class="field" data-id="${f.id}"${ifa}><fieldset><legend>${lab}</legend>${hint}<div class="matrix">${rows}</div></fieldset></div>`;
+  }
+  let ctl;
+  if (f.t === "textarea") ctl = `<textarea id="${f.id}" name="${f.id}"></textarea>`;
+  else if (f.t === "select") ctl = `<select id="${f.id}" name="${f.id}"><option value="">Selecione</option>${f.o.map(o => `<option>${esc(o)}</option>`).join("")}</select>`;
+  else ctl = `<input type="${f.t}" id="${f.id}" name="${f.id}"${f.t === "url" ? ' placeholder="https://"' : ""}${f.t === "tel" ? ' placeholder="(00) 00000-0000"' : ""}>`;
+  return `<div class="field" data-id="${f.id}"${ifa}><label for="${f.id}">${lab}</label>${hint}${ctl}${err}</div>`;
+}
+
+function render() {
+  const form = $("#form"), toc = $("#toc");
+  form.innerHTML = FORM.map(s => `<section class="sec" id="s-${s.id}"${s.if ? ` data-if="${esc(JSON.stringify(s.if))}"` : ""}><div class="sec-head"><div class="eyebrow">${s.cart ? '<span class="tag-cart">Loja virtual</span>' : ""}</div><h2>${esc(s.t)}</h2>${s.d ? `<p>${esc(s.d)}</p>` : ""}</div>${s.f.map(fieldHTML).join("")}</section>`).join("") +
+    `<div class="actions"><button type="submit" class="primary" id="send">Enviar respostas</button><span class="saved" id="saved"></span></div>`;
+  toc.innerHTML = FORM.map(s => `<a href="#s-${s.id}" data-sec="${s.id}"><span>${esc(s.t)}</span><span class="n"></span></a>`).join("");
+  form.querySelectorAll(".eyebrow:empty").forEach(e => e.remove());
+}
+
+function answerKeys(f) {
+  if (f.t === "refs") { const k = []; for (let i = 1; i <= f.n; i++) k.push(`ref${i}_link`, `ref${i}_gosta`); return k; }
+  return f.t === "note" ? [] : [f.id];
+}
+function readField(f) {
+  const form = $("#form");
+  if (f.t === "radio") {
+    const c = form.querySelector(`input[name="${f.id}"]:checked`);
+    if (!c) return "";
+    if (c.value === "Outro") { const o = $(`#${f.id}__outro`).value.trim(); return o ? `Outro: ${o}` : "Outro"; }
+    return c.value;
+  }
+  if (f.t === "check") {
+    return [...form.querySelectorAll(`input[name="${f.id}"]:checked`)].map(c => {
+      if (c.value !== "Outro") return c.value;
+      const o = $(`#${f.id}__outro`).value.trim(); return o ? `Outro: ${o}` : "Outro";
+    });
+  }
+  if (f.t === "matrix") {
+    const out = {};
+    f.rows.forEach((r, i) => { const c = form.querySelector(`input[name="${f.id}__${i}"]:checked`); if (c) out[r] = c.value; });
+    return out;
+  }
+  const el = form.elements[f.id];
+  return el ? el.value.trim() : "";
+}
+const isEmpty = v => v == null || v === "" || (Array.isArray(v) && !v.length) || (typeof v === "object" && !Array.isArray(v) && !Object.keys(v).length);
+
+function getValues() {
+  const v = {};
+  for (const f of allFields()) {
+    if (f.t === "note") continue;
+    if (f.t === "refs") { for (const k of answerKeys(f)) v[k] = $("#form").elements[k].value.trim(); continue; }
+    v[f.id] = readField(f);
+  }
+  return v;
+}
+function rawState() {
+  const st = {};
+  for (const el of $("#form").elements) {
+    if (!el.name) continue;
+    if (el.type === "radio" || el.type === "checkbox") { if (el.checked) (st[el.name] = st[el.name] || []).push(el.value); }
+    else if (el.value) st[el.name] = el.value;
+  }
+  return st;
+}
+function applyState(st) {
+  for (const el of $("#form").elements) {
+    if (!el.name || !(el.name in st)) continue;
+    if (el.type === "radio" || el.type === "checkbox") el.checked = st[el.name].includes(el.value);
+    else el.value = st[el.name];
+  }
+}
+
+function condOK(c, vals) {
+  if (!c) return true;
+  const v = vals[c.f];
+  return Array.isArray(v) ? v.some(x => c.in.includes(x)) : c.in.includes(v);
+}
+function update() {
+  const vals = getValues();
+  document.querySelectorAll("[data-if]").forEach(el => { el.hidden = !condOK(JSON.parse(el.dataset.if), vals); });
+  allFields().forEach(f => {
+    if (!f.other) return;
+    const box = $(`#${f.id}__outro`), on = !!$("#form").querySelector(`input[name="${f.id}"][value="Outro"]:checked`);
+    box.hidden = !on;
+  });
+  let tot = 0, done = 0;
+  for (const s of FORM) {
+    const secOn = condOK(s.if, vals);
+    $(`#toc a[data-sec="${s.id}"]`).hidden = !secOn;
+    if (!secOn) continue;
+    let st = 0, sd = 0;
+    for (const f of s.f) {
+      if (!condOK(f.if, vals)) continue;
+      for (const k of answerKeys(f)) { st++; if (!isEmpty(vals[k])) sd++; }
+    }
+    tot += st; done += sd;
+    const a = $(`#toc a[data-sec="${s.id}"]`);
+    a.querySelector(".n").textContent = `${sd}/${st}`;
+    a.classList.toggle("done", st > 0 && sd === st);
+  }
+  const p = tot ? Math.round(done / tot * 100) : 0;
+  $("#barFill").style.width = p + "%";
+  $("#pct").textContent = `${p}% respondido`;
+  return vals;
+}
+
+function fmt(v) {
+  if (Array.isArray(v)) return v.join(", ");
+  if (typeof v === "object") return "\n" + Object.entries(v).map(([k, x]) => `   ${k}: ${x}`).join("\n");
+  return v;
+}
+function summary(vals) {
+  const out = [`BRIEFING DE SITE · ${vals.fantasia || "Cliente"}`, `Enviado em ${new Date().toLocaleString("pt-BR")}`, ""];
+  for (const s of FORM) {
+    if (!condOK(s.if, vals)) continue;
+    const lines = [];
+    for (const f of s.f) {
+      if (f.t === "note" || !condOK(f.if, vals)) continue;
+      if (f.t === "refs") {
+        for (let i = 1; i <= f.n; i++) {
+          const l = vals[`ref${i}_link`], g = vals[`ref${i}_gosta`];
+          if (l || g) lines.push(`• Referência ${i}: ${l || "(sem link)"}${g ? `\n   O que gosta: ${g}` : ""}`);
+        }
+        continue;
+      }
+      if (!isEmpty(vals[f.id])) lines.push(`• ${f.l}: ${fmt(vals[f.id])}`);
+    }
+    if (lines.length) out.push(`■ ${s.t.toUpperCase()}`, ...lines, "");
+  }
+  return out.join("\n");
+}
+
+let saveT;
+function saveDraft() {
+  clearTimeout(saveT);
+  saveT = setTimeout(() => {
+    try { localStorage.setItem(DRAFT, JSON.stringify(rawState())); $("#saved").textContent = "Rascunho salvo neste navegador"; } catch (e) {}
+  }, 500);
+}
+
+let db = null, user = null, uid = null, downloads = null;
+async function boot() {
+  if (!window.claude?.use) return;
+  [db, user, downloads] = await Promise.all([claude.use("db"), claude.use("user"), claude.use("downloads")]);
+  if (user) { try { uid = await user.id(); } catch (e) {} }
+  if (db && user) { try { if (await user.canEdit()) adminPanel(); } catch (e) {} }
+}
+
+function validate(vals) {
+  let first = null;
+  document.querySelectorAll(".field.err").forEach(e => e.classList.remove("err"));
+  for (const f of allFields()) {
+    if (!f.req || !condOK(f.sec.if, vals) || !condOK(f.if, vals)) continue;
+    let bad = isEmpty(vals[f.id]);
+    if (!bad && f.t === "email") bad = !/^\S+@\S+\.\S+$/.test(vals[f.id]);
+    if (bad) { const el = $(`.field[data-id="${f.id}"]`); el.classList.add("err"); first = first || el; }
+  }
+  if (first) { first.scrollIntoView({ block: "center" }); const i = first.querySelector("input,textarea,select"); i && i.focus({ preventScroll: true }); }
+  return !first;
+}
+
+async function submit(e) {
+  e.preventDefault();
+  const vals = update();
+  if (!validate(vals)) return;
+  const btn = $("#send"); btn.disabled = true; btn.textContent = "Enviando…";
+  const text = summary(vals);
+  let saved = false;
+  if (db && uid) {
+    try {
+      const now = new Date().toISOString();
+      const base = db.doc(`briefings/${uid}`);
+      const ref = base.collection("envios").doc();
+      await ref.set({ cliente: vals.fantasia, responsavel: vals.resp_nome, whatsapp: vals.resp_whats, email: vals.resp_email, enviadoEm: now, respostas: vals, resumo: text });
+      await base.set({ cliente: vals.fantasia, responsavel: vals.resp_nome, whatsapp: vals.resp_whats, atualizadoEm: now, ultimoEnvio: ref.id });
+      saved = true;
+    } catch (err) { saved = false; }
+  }
+  if (saved) { try { localStorage.removeItem(DRAFT); } catch (e) {} }
+  showDone(text, saved, vals.fantasia);
+}
+
+function copyBlock(text, ta) {
+  return async () => {
+    try { await navigator.clipboard.writeText(text); return true; }
+    catch (e) { ta.focus(); ta.select(); return false; }
+  };
+}
+function showDone(text, saved, name) {
+  $("#form").hidden = true; $("#toc").hidden = true;
+  const d = $("#doneSlot"); d.hidden = false;
+  d.innerHTML = `<div class="done">
+    <span class="badge ${saved ? "ok" : "pend"}">${saved ? "Respostas recebidas" : "Falta só um passo"}</span>
+    <h2>${saved ? "Obrigado! A equipe da Move já recebeu o seu briefing." : "Copie suas respostas e envie para a Move"}</h2>
+    <p class="lead">${saved ? "Vamos analisar tudo e chamar você para a reunião de alinhamento. Se quiser, guarde uma cópia das respostas abaixo." : "Clique em Copiar respostas e cole na conversa do WhatsApp ou no e-mail com a equipe da Move. Suas respostas continuam salvas neste navegador caso precise voltar."}</p>
+    <textarea id="resumo" readonly>${esc(text)}</textarea>
+    <div class="actions"><button type="button" class="primary" id="copy">Copiar respostas</button>${downloads ? '<button type="button" id="dl">Baixar arquivo .txt</button>' : ""}<button type="button" id="edit">Voltar e editar</button><span class="saved" id="copyMsg"></span></div>
+  </div>`;
+  const ta = $("#resumo"), copy = copyBlock(text, ta);
+  $("#copy").onclick = async () => { $("#copyMsg").textContent = (await copy()) ? "Copiado. Agora é só colar no WhatsApp ou no e-mail." : "Texto selecionado. Use Ctrl+C ou Copiar."; };
+  if (downloads) $("#dl").onclick = async () => {
+    try { await downloads.save({ filename: `briefing-site-${(name || "cliente").toLowerCase().replace(/[^a-z0-9]+/g, "-")}.txt`, data: text }); } catch (e) {}
+  };
+  $("#edit").onclick = () => { d.hidden = true; $("#form").hidden = false; $("#toc").hidden = false; const b = $("#send"); b.disabled = false; b.textContent = "Enviar respostas"; };
+  d.scrollIntoView({ block: "start" });
+}
+
+function adminPanel() {
+  const slot = $("#adminSlot");
+  slot.innerHTML = `<details class="admin"><summary><span>Painel da Move: briefings recebidos</span><span id="acount">…</span></summary><div class="inner"><div class="alist" id="alist"><p class="empty">Carregando…</p></div><div id="aview"></div></div></details>`;
+  db.collection("briefings").orderBy("atualizadoEm", "desc").onSnapshot(snap => {
+    $("#acount").textContent = snap.size;
+    const list = $("#alist");
+    if (snap.empty) { list.innerHTML = `<p class="empty">Nenhum briefing salvo ainda. Quando alguém enviar o formulário com login no Claude, ele aparece aqui. Respostas copiadas pelo cliente chegam pelo WhatsApp ou e-mail.</p>`; return; }
+    list.innerHTML = "";
+    snap.docs.forEach(doc => {
+      const x = doc.data(), b = document.createElement("button");
+      b.type = "button"; b.className = "aitem";
+      b.innerHTML = `<span><b></b><br><small></small></span><small>${esc(new Date(x.atualizadoEm).toLocaleDateString("pt-BR"))}</small>`;
+      b.querySelector("b").textContent = x.cliente || "Sem nome";
+      b.querySelector("span small").textContent = `${x.responsavel || ""} · ${x.whatsapp || ""}`;
+      b.onclick = () => openBrief(doc.id);
+      list.appendChild(b);
+    });
+  }, () => { $("#alist").innerHTML = `<p class="empty">Não foi possível carregar os briefings agora. Recarregue a página.</p>`; });
+}
+async function openBrief(id) {
+  const v = $("#aview"); v.innerHTML = `<p class="empty">Abrindo…</p>`;
+  try {
+    const s = await db.doc(`briefings/${id}`).collection("envios").orderBy("enviadoEm", "desc").limit(1).get();
+    if (s.empty) { v.innerHTML = `<p class="empty">Este briefing não tem respostas salvas.</p>`; return; }
+    const text = s.docs[0].data().resumo || "";
+    v.innerHTML = `<div class="done" style="padding:18px"><textarea readonly id="aresumo"></textarea><div class="actions"><button type="button" id="acopy">Copiar resumo</button><span class="saved" id="amsg"></span></div></div>`;
+    const ta = $("#aresumo"); ta.value = text;
+    const copy = copyBlock(text, ta);
+    $("#acopy").onclick = async () => { $("#amsg").textContent = (await copy()) ? "Copiado" : "Texto selecionado"; };
+  } catch (e) { v.innerHTML = `<p class="empty">Não foi possível abrir este briefing. Tente de novo.</p>`; }
+}
+
+render();
+try { const d = JSON.parse(localStorage.getItem(DRAFT) || "null"); if (d) { applyState(d); $("#saved").textContent = "Rascunho anterior recuperado"; } } catch (e) {}
+update();
+$("#form").addEventListener("input", () => { update(); saveDraft(); });
+$("#form").addEventListener("change", e => { const fl = e.target.closest(".field"); fl && fl.classList.remove("err"); });
+$("#form").addEventListener("submit", submit);
+boot();
+</script>
